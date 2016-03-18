@@ -47,19 +47,8 @@
  * 7. coloca o HIGH no pino
  */
 
-int main (void)
+void Set_PIO()
 {
-
-	/**
-	* Inicializando o clock do uP
-	*/
-	sysclk_init();
-	
-	/** 
-	*  Desabilitando o WathDog do uP
-	*/
-	WDT->WDT_MR = WDT_MR_WDDIS;
-		
 	// 29.17.4 PMC Peripheral Clock Enable Register 0
 	// 1: Enables the corresponding peripheral clock.
 	// ID_PIOA = 11 - TAB 11-1
@@ -67,7 +56,7 @@ int main (void)
 	PMC->PMC_PCER0 = ID_PIOC;
 
 	//31.6.1 PIO Enable Register
-	// 1: Enables the PIO to control the corresponding pin (disables peripheral control of the pin).	
+	// 1: Enables the PIO to control the corresponding pin (disables peripheral control of the pin).
 	PIOA->PIO_PER = (1 << PIN_LED_BLUE );
 	PIOA->PIO_PER = (1 << PIN_LED_GREEN_RED );
 
@@ -85,24 +74,124 @@ int main (void)
 	PIOC->PIO_OER =  (1 << PIN_LED_GREEN_RED );
 
 	// 31.6.10 PIO Set Output Data Register
-	// value = 
+	// value =
 	// 		1 : Sets the data to be driven on the I/O line.
 	// 		0 : do nothing
 	//PIOA->PIO_SODR = (1 << PIN_LED_BLUE );
+	
+}
+
+void Set_LEDON( Pio *pin, int led)
+{
+	if(pin == PIOC)
+	{
+		pin->PIO_SODR = (1 << led);
+	}
+	else if(pin == PIOA)
+	{
+		pin->PIO_CODR = (1 << led);
+	}
+}
+
+void Set_LEDOFF( Pio *pin, int led)
+{
+	if(pin == PIOC)
+	{
+		pin->PIO_CODR = (1 << led);
+	}
+	else if(pin == PIOA)
+	{
+		pin->PIO_SODR = (1 << led);
+	}
+}
+
+void Change_LED(Pio *pin, int led)
+{
+	volatile int tmp = pin->PIO_ODSR;
+	
+		if(pin == PIOC)
+		{
+			if((tmp >> led) == 1)
+			{
+				pin->PIO_CODR = (1 << led);
+			}
+			else
+			{
+				pin->PIO_SODR = (1 << led);
+			}
+		}
+		else if(pin == PIOA)
+		{
+			if((pin->PIO_ODSR << led) == 1)
+			{
+				pin->PIO_SODR = (1 << led);
+			}
+			else
+			{
+				pin->PIO_CODR = (1 << led);
+			}
+		}
+}
+
+void Blink_LED(int time_ms)
+{
+	Set_LEDOFF(PIOC, PIN_LED_GREEN_RED);
+	Set_LEDON(PIOA, PIN_LED_BLUE);
+	//PIOC->PIO_CODR = (1 << PIN_LED_GREEN_RED );
+	//PIOA->PIO_CODR = (1 << PIN_LED_BLUE );
+	delay_ms(time_ms);
+	Set_LEDOFF(PIOA, PIN_LED_BLUE);
+	Set_LEDON(PIOA, PIN_LED_GREEN_RED);
+	//PIOA->PIO_SODR = (1 << PIN_LED_BLUE );
+	//PIOA->PIO_CODR = (1 << PIN_LED_GREEN_RED);
+	delay_ms(time_ms);
+	Set_LEDOFF(PIOA, PIN_LED_GREEN_RED);
+	Set_LEDON(PIOC, PIN_LED_GREEN_RED);
+	//PIOA->PIO_SODR = (1 << PIN_LED_GREEN_RED );
+	//PIOC->PIO_SODR = (1 << PIN_LED_GREEN_RED);
+	delay_ms(time_ms);
+}
+
+void Blink_Invert(int time_ms)
+{
+	Change_LED(PIOC, PIN_LED_GREEN_RED);
+	Change_LED(PIOA, PIN_LED_BLUE);
+	//PIOC->PIO_CODR = (1 << PIN_LED_GREEN_RED );
+	//PIOA->PIO_CODR = (1 << PIN_LED_BLUE );
+	delay_ms(time_ms);
+	Change_LED(PIOA, PIN_LED_BLUE);
+	Change_LED(PIOA, PIN_LED_GREEN_RED);
+	//PIOA->PIO_SODR = (1 << PIN_LED_BLUE );
+	//PIOA->PIO_CODR = (1 << PIN_LED_GREEN_RED);
+	delay_ms(time_ms);
+	Change_LED(PIOA, PIN_LED_GREEN_RED);
+	Change_LED(PIOC, PIN_LED_GREEN_RED);
+	//PIOA->PIO_SODR = (1 << PIN_LED_GREEN_RED );
+	//PIOC->PIO_SODR = (1 << PIN_LED_GREEN_RED);
+	delay_ms(time_ms);
+}
+
+
+int main (void)
+{
+
+	/**
+	* Inicializando o clock do uP
+	*/
+	sysclk_init();
+	
+	/** 
+	*  Desabilitando o WathDog do uP
+	*/
+	WDT->WDT_MR = WDT_MR_WDDIS;
+	
+	Set_PIO();
 	
 	/**
 	*	Loop infinito
 	*/
 		while(1){
-			PIOC->PIO_CODR = (1 << PIN_LED_GREEN_RED );
-			PIOA->PIO_CODR = (1 << PIN_LED_BLUE );
-			delay_ms(100);
-			PIOA->PIO_SODR = (1 << PIN_LED_BLUE );
-			PIOA->PIO_CODR = (1 << PIN_LED_GREEN_RED);
-			delay_ms(100);
-			PIOA->PIO_SODR = (1 << PIN_LED_GREEN_RED );
-			PIOC->PIO_SODR = (1 << PIN_LED_GREEN_RED);
-			delay_ms(100);
+			Blink_Invert(100);
             /*
              * Utilize a função delay_ms para fazer o led piscar na frequência
              * escolhida por você.
