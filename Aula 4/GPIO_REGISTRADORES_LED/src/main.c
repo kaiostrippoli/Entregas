@@ -33,8 +33,12 @@
  * ----------------------------------
  */
 #define PIN_LED_BLUE 19
+<<<<<<< HEAD
 #define PIN_LED_GREEN_RED 20
 
+=======
+#define BUTTON_B2 3
+>>>>>>> origin/master
 
 /**
  * Main function
@@ -52,17 +56,27 @@ void Set_PIO()
 	// 29.17.4 PMC Peripheral Clock Enable Register 0
 	// 1: Enables the corresponding peripheral clock.
 	// ID_PIOA = 11 - TAB 11-1
+<<<<<<< HEAD
 	PMC->PMC_PCER0 = ID_PIOA;
 	PMC->PMC_PCER0 = ID_PIOC;
 
 	//31.6.1 PIO Enable Register
 	// 1: Enables the PIO to control the corresponding pin (disables peripheral control of the pin).
+=======
+	PMC->PMC_PCER0 = 1 << ID_PIOB;
+	PMC->PMC_PCER0 = 1 << ID_PIOA;
+
+
+	//31.6.1 PIO Enable Register
+	// 1: Enables the PIO to control the corresponding pin (disables peripheral control of the pin).
+	PIOB->PIO_PER = (1 << BUTTON_B2);
+>>>>>>> origin/master
 	PIOA->PIO_PER = (1 << PIN_LED_BLUE );
 	PIOA->PIO_PER = (1 << PIN_LED_GREEN_RED );
 
 	// 31.6.46 PIO Write Protection Mode Register
 	// 0: Disables the write protection if WPKEY corresponds to 0x50494F (PIO in ASCII).
-	PIOA->PIO_WPMR = 0;
+	PIOA->PIO_WPMR = 0;   
 	
 	// 31.6.4 PIO Output Enable Register
 	// value =
@@ -70,15 +84,20 @@ void Set_PIO()
 	//	 	0 : do nothing
 	
 	PIOA->PIO_OER =  (1 << PIN_LED_BLUE );
+<<<<<<< HEAD
 	PIOA->PIO_OER =  (1 << PIN_LED_GREEN_RED );
 	PIOC->PIO_OER =  (1 << PIN_LED_GREEN_RED );
 
+=======
+	PIOB->PIO_ODR = (1 << BUTTON_B2);
+>>>>>>> origin/master
 	// 31.6.10 PIO Set Output Data Register
 	// value =
 	// 		1 : Sets the data to be driven on the I/O line.
 	// 		0 : do nothing
 	//PIOA->PIO_SODR = (1 << PIN_LED_BLUE );
 	
+<<<<<<< HEAD
 }
 
 void Set_LEDON( Pio *pin, int led)
@@ -186,12 +205,33 @@ int main (void)
 	WDT->WDT_MR = WDT_MR_WDDIS;
 	
 	Set_PIO();
+=======
+	PIOB->PIO_PUER = (1 << BUTTON_B2); 
+	PIOB->PIO_IFER = (1 << BUTTON_B2); // ATIVANDO O DEBOUNCING
+>>>>>>> origin/master
 	
 	/**
 	*	Loop infinito
 	*/
 		while(1){
+<<<<<<< HEAD
 			Blink_Invert(100);
+=======
+			if (((PIOB->PIO_PDSR >> BUTTON_B2) & 1) == 0)
+			{
+				PIOA->PIO_CODR = (1 << PIN_LED_BLUE );			
+				//delay_ms(1000);
+
+			}
+			else
+			{
+							PIOA->PIO_SODR = (1 << PIN_LED_BLUE );
+					//		delay_ms(1000);
+			}
+			
+			//PIOA->PIO_SODR = (1 << PIN_LED_BLUE );
+			//delay_ms(1000);
+>>>>>>> origin/master
             /*
              * Utilize a função delay_ms para fazer o led piscar na frequência
              * escolhida por você.
