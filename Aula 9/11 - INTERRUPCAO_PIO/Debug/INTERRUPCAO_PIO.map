@@ -4333,7 +4333,7 @@ OUTPUT(INTERRUPCAO_PIO.elf elf32-littlearm)
  .debug_line    0x000050b2      0x816 src/Driver/pmc_maua.o
  .debug_line    0x000058c8      0xd65 src/main.o
 
-.debug_str      0x00000000    0x50b06
+.debug_str      0x00000000    0x50b34
  .debug_str     0x00000000    0x4e4c9 src/ASF/common/services/clock/sam4s/sysclk.o
                               0x4e847 (size before relaxing)
  .debug_str     0x0004e4c9      0x1a9 src/ASF/common/services/delay/sam/cycle_counter.o
@@ -4350,8 +4350,8 @@ OUTPUT(INTERRUPCAO_PIO.elf elf32-littlearm)
                               0x3b21d (size before relaxing)
  .debug_str     0x00050218       0x60 src/Driver/pmc_maua.o
                               0x3b148 (size before relaxing)
- .debug_str     0x00050278      0x88e src/main.o
-                              0x4f8dd (size before relaxing)
+ .debug_str     0x00050278      0x8bc src/main.o
+                              0x4f8ed (size before relaxing)
 
 .debug_frame    0x00000000     0x18dc
  .debug_frame   0x00000000      0x200 src/ASF/common/services/clock/sam4s/sysclk.o

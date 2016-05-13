@@ -31,9 +31,9 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
  13 .debug_line   0000662d  00000000  00000000  0002b5b5  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_str    00050b06  00000000  00000000  00031be2  2**0
+ 14 .debug_str    00050b34  00000000  00000000  00031be2  2**0
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_frame  000018dc  00000000  00000000  000826e8  2**2
+ 15 .debug_frame  000018dc  00000000  00000000  00082718  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -2880,7 +2880,6 @@ static void push_button_handle(uint32_t id, uint32_t mask){
   400f40:	f003 0301 	and.w	r3, r3, #1
   400f44:	2b00      	cmp	r3, #0
   400f46:	d105      	bne.n	400f54 <push_button_handle+0x24>
-	
 	//PIOA->PIO_SODR = (1 << PIN_LED_GREEN ); 
 	 pio_set(PIOA,(1<<PIN_LED_GREEN));
   400f48:	4806      	ldr	r0, [pc, #24]	; (400f64 <push_button_handle+0x34>)
@@ -2889,16 +2888,15 @@ static void push_button_handle(uint32_t id, uint32_t mask){
   400f50:	4798      	blx	r3
   400f52:	e004      	b.n	400f5e <push_button_handle+0x2e>
 	 } 
-	 else { 
-		//PIOA->PIO_CODR = (1 << PIN_LED_GREEN ); 
-		 // delay_ms(1000); 
-		
+	 else
+	 { 
+	//PIOA->PIO_CODR = (1 << PIN_LED_GREEN ); 
 		 pio_clear(PIOA, (1 << PIN_LED_GREEN));
   400f54:	4803      	ldr	r0, [pc, #12]	; (400f64 <push_button_handle+0x34>)
   400f56:	f44f 1180 	mov.w	r1, #1048576	; 0x100000
   400f5a:	4b04      	ldr	r3, [pc, #16]	; (400f6c <push_button_handle+0x3c>)
   400f5c:	4798      	blx	r3
-		 }
+	 }	
 
 }
   400f5e:	3708      	adds	r7, #8
