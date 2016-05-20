@@ -50,7 +50,8 @@
 
 #define ID_TIMER		ID_TC0
 
-
+int count =0;
+int sec =0;
 /** 
  * Definição dos ports
  * Ports referentes a cada pino
@@ -66,12 +67,17 @@
 
 #define Freq_Init_Blink 4	//Hz
 
+/************************************************************************/
+/* Gloabal                                                                     */
+/************************************************************************/
+int string1[20];
+
 /**
  *  Handle Interrupcao botao 1
  */
 static void Button2_Handler(uint32_t id, uint32_t mask)
 {
-tc_write_rc(TC0, 0, tc_read_rc(TC0, 0) + 2730);
+	tc_write_rc(TC0, 0, tc_read_rc(TC0, 0) + 2730);
 }
 
 /**
@@ -79,7 +85,8 @@ tc_write_rc(TC0, 0, tc_read_rc(TC0, 0) + 2730);
  */
 static void Button3_Handler(uint32_t id, uint32_t mask)
 {
-tc_write_rc(TC0, 0, tc_read_rc(TC0, 0) - 2730);
+
+	tc_write_rc(TC0, 0, tc_read_rc(TC0, 0) - 2730);
 }
 
 /**
@@ -97,15 +104,8 @@ void TC0_Handler(void)
 
 	/** Muda o estado do LED */
 
-	if (((PIOA->PIO_ODSR >> PIN_LED_GREEN) & 1) == 0) {
-		//PIOA->PIO_SODR = (1 << PIN_LED_GREEN );
-		pio_set(PIOA,(1<<PIN_LED_GREEN));
-	}
-	else
-	{
-		//PIOA->PIO_CODR = (1 << PIN_LED_GREEN );
-		pio_clear(PIOA, (1 << PIN_LED_GREEN));
-	}
+	sec ++;
+	sprintf(string1,"Tempo: %i",sec);
 
 }
 
